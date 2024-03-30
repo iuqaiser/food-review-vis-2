@@ -1,0 +1,10 @@
+numpy
+pandas
+wget
+nltk
+gensim
+scipy
+scikit-learn
+plotly
+streamlit
+streamlit-jupyter
