@@ -1,3 +1,6 @@
+#data and some parts of code from https://github.com/davila7/visual-embeddings
+#some parts of code from https://medium.com/@VeryFatBoy/quick-tip-visualise-openai-vector-embeddings-using-plotly-express-8faad12791d3
+
 import os
 import numpy as np
 import pandas as pd
@@ -16,6 +19,7 @@ from sklearn.manifold import TSNE
 import streamlit as st
 from streamlit_jupyter import StreamlitPatcher
 StreamlitPatcher().jupyter()
+#from sklearn.metrics.pairwise import cosine_similarity
 
 df = pd.read_csv("food_review.csv")
 embedding_array = np.array(df['embedding'].apply(ast.literal_eval).to_list())
