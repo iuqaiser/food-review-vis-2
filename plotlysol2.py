@@ -18,16 +18,16 @@ from streamlit_jupyter import StreamlitPatcher
 StreamlitPatcher().jupyter()
 
 df = pd.read_csv("food_review.csv")
-df = df.drop_duplicates(keep = 'first')
 embedding_array = np.array(df['embedding'].apply(ast.literal_eval).to_list())
+model = Word2Vec.load("word2vec_model.bin")
 
-def create_embedding(data): 
+# Define a function to calculate cosine similarity
+def cosine_similarity(vec1, vec2):
+    return np.dot(vec1, vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2))
+
+def create_embedding(data, model): 
     # Tokenize the input text
     tokens = word_tokenize(data.lower())
-    vector_size = embedding_array.shape[1]
-    
-    # Train Word2Vec model
-    model = gensim.models.Word2Vec([tokens], min_count=1, vector_size=vector_size, window=5, sg=1)
     
     # Aggregate embeddings for all tokens into a single embedding
     embedding = np.zeros((model.vector_size,), dtype=np.float32)
@@ -38,15 +38,17 @@ def create_embedding(data):
     return embedding.reshape(1, -1)  # Reshape to a 2D array
 
 # Define your visualization function
-def visualize(query = "Wolfgang Puck"):
+def visualize(query):
     # Your visualization code here
     print("THIS IS THE QUERY WORD:")
     print(query)
     if not query:
         query = "Wolfgang Puck"
     print(query)
+    
     st.write("Visualizing for query:", query)
-    query_embedding = np.array(create_embedding(query))
+    query_embedding = np.array(create_embedding(query, model))
+    print(query_embedding)
     df['distance'] = cdist(embedding_array, query_embedding)
 
     scaler = MinMaxScaler()
@@ -109,7 +111,7 @@ def visualize(query = "Wolfgang Puck"):
     #fig.show()
 
     st.plotly_chart(plot, use_container_width=True)
-    df2
+    st.write(df2)
 
 
 # Main function for Streamlit app
